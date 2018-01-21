@@ -1,0 +1,148 @@
+
+<div class="panel panel-default">
+<div class="panel-heading">
+                            Asset management
+</div>
+
+
+
+
+
+<div class="panel-body">
+<table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr >
+                                            <th class="success" colspan=3>Buttons to work with assets</th>
+                                           
+                                            
+                                        </tr>
+                                    </thead>
+			<tbody >
+			                                 <tr class="odd gradeX">
+                                            <td><button ng-click="address.createasset()"> Asset Create</button></td>
+											<td><button ng-click="address.issuemoreasset()"> Issue More Assets(1)</button></td>
+											<td><button ng-click="address.getassets()"> Assets List</button></td>
+											
+											
+											
+                                            
+                                         
+                                        </tr>
+										<tr class="odd gradeX">
+                                            <td><button ng-click="address.createuserasset()"> User Asset Create (1,2)</button></td>
+											<td><button ng-click="address.issuemoreuserasset()"> Issue More User Assets (1,2)</button></td>
+											<td><button ng-click="address.getuserassets()"> User Assets List (2)</button></td>
+											
+											
+											
+                                            
+                                         
+                                        </tr>
+										<tr class="odd gradeX">
+                                            <td><button ng-click="address.updateasset()"> Update Asset(1) </button></td>
+											<td><button ng-click="address.sendasset()"> Send Asset(2,3) </button></td>
+											<td><button ng-click="address.getasset()"> Query Asset(1)</button></td>
+											
+											
+											
+                                            
+                                         
+                                        </tr>
+										<tr class="odd gradeX">
+                                            <td><button ng-click="address.updateuserasset()"> Update User Asset (4,1) </button></td>
+											<td><button ng-click="address.senduserasset()"> Send User Asset(1,4) </button></td>
+											<td><button ng-click="address.getuserasset()"> Query User Asset (1,2)</button></td>
+											
+											
+											
+											
+                                            
+                                         
+                                        </tr>
+										<tr class="odd gradeX">
+                                            <td><button ng-click="address.updateassetmetadata()"> Update Asset Metadata (5,1) </button></td>
+											<td><button ng-click="address.createassetmetadata()"> Create Asset with Metadata </button></td>
+											<td><button ng-click="address.updateusermetadata()"> Update User Metadata (2,6)</button></td>
+											
+											
+											
+                                            
+                                         
+                                        </tr>
+       
+			</tbody>
+<table>
+
+Assetaddress(1) <input ng-model="input.assetaddress" /> </br>
+Assetdata(4) <input ng-model="input.assetdata" /> </br>
+Assetmetadata(5) <input ng-model="input.assetmetadata" /> </br>
+Useraddress(2) <input ng-model="input.useraddress" /> </br>
+Usermetadata(6) <input ng-model="input.usermetadata" /> </br>
+
+fromUseraddress(3) <input ng-model="fromuseraddress" /> </br>
+toUseraddress(3) <input ng-model="touseraddress" /> </br>
+<pre style="white-space: pre-wrap; word-break: keep-all;display: flex; ">
+{{address.alladdress}}
+</pre>
+
+
+<div class="dataTable_wrapper">
+<table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th class="success">Customer Name</th>
+                                            <th class="success">Number of orders</th>
+											<th class="success">Total sales</th>
+                                            
+                                        </tr>
+                                    </thead>
+			<tbody ng-repeat="item in salesbycustomername | startFrom:currentPage1*pageSize1 | limitTo:pageSize1">
+ 
+ 
+                                
+                                  
+                                        <tr class="odd gradeX">
+                                            <td>{{item._id}}</td>
+											<td>{{item.num_products}}</td>
+											
+											<td>{{item.sales}}</td>
+                                            
+                                         
+                                        </tr>
+                                       
+
+	</tbody>	
+										
+
+  </table>
+                            </div>
+	
+<button ng-disabled="currentPage1 == 0" ng-click="currentPage1=currentPage1-1">
+        Previous
+    </button>
+	{{currentPage1+1}}/{{numberOfPages1()}}
+    <button ng-disabled="currentPage1 >= salesbycustomername.length/pageSize1 - 1" ng-click="currentPage1=currentPage1+1">
+        Next
+    </button>
+   
+    
+</div>  
+</div>
+  <div class="panel panel-default">						
+<div class="panel-heading">
+                            Sales by product category
+</div>							
+
+<div class="panel-body">
+<canvas id="bar" class="chart chart-pie" data="categorydata2" legend="true" 
+  labels="categorylabels"></canvas> 
+</div>
+
+
+</div>
+  
+  
+  
+  
+
+
