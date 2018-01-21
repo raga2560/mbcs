@@ -199,7 +199,11 @@ function BlockChain(io, db, multichain) {
 		    }
 			var msg = {
 				tx: tx,
-				addresses: data.address,
+				producer: data.address,
+				consumer: '',
+				aggregator: '',
+				auctioner: '',
+				addresses: [data.address],
 				details: data.details,
 				asset: data.asset
 			};
@@ -329,7 +333,7 @@ function BlockChain(io, db, multichain) {
 	
 		});
 		
-		socket.on('sendAssetFrom', function(data) {
+		socket.on('sendAssetFrom', function(data1) {
 			/*
 			{
 			from: fromaddress
@@ -342,8 +346,10 @@ function BlockChain(io, db, multichain) {
             units: 0.1
             }
 			*/
+			
+			var data = data1.data;
 	
-		    assets.sendAssetFrom(data.fromaddress, data.toaddress, data.asset, data.qty, data.details, function(err, tx) {
+		    assets.sendAssetFrom(data.fromaddress, data.toaddress, data.asset, data.qty, function(err, tx) {
 		
 		
 			if(err) {
@@ -359,6 +365,11 @@ function BlockChain(io, db, multichain) {
 			
 			var msg = {
 				tx: tx,
+				producer: '',
+				consumer: '',
+				aggregator: '',
+				auctioner: '',
+	
 				addresses: [data.fromaddress, data.toaddress],
 				fromaddress:data.fromaddress,
 				toaddress: data.toaddress

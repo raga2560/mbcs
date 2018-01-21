@@ -68,18 +68,47 @@ var someTxId = '231a4f30e2eeba817e4277e39ca65880ff848c52694bf789c5dc0af0ac8bbc31
 	}
 
 
-	this.sendAssetFrom = function (fromAddress, toAddress,  callback) {
+	this.sendAssetFrom = function (fromAddress, toAddress, asset, qty,  callback) {
         "use strict";
 
-		multichain.sendAssetFrom({from: fromAddress, to: toAddress, asset: "zcoin", qty: 5}, (err, tx) => {
+		var msg = {
+            from: fromAddress,
+            to: toAddress,
+            asset: "Tomoto",
+            qty: 1
+        };
+		
+		
+		multichain.sendAssetFromPromise(msg, (err, res) => {
 		if(err){
 			console.log(err);
-        throw err;
+			callback(err, null);
+        
 		}
 		console.log(res);
 		callback(null, res);
 		
-		})
+		}).then(Txid => {
+        assert(Txid);
+        listenForConfirmations(Txid, (err, confirmed) => {
+            if(err){
+                callback(err, null);
+            }
+            if(confirmed === true){
+                //confirmCallback1.call(this);
+				
+				callback(null, res);
+            }
+        })
+    })
+    .catch(err => {
+        console.log(err)
+		callback(err, null);
+        
+    })
+	
+	
+		
 
 
 
