@@ -1,0 +1,232 @@
+
+<html ng-app="sportsApp">
+
+<head>
+  <title>HTTP Post Example</title>
+  <style>
+    .player {
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body ng-controller="MainCtrl">
+  <h1>Hello Servers!</h1>
+  <button ng-click="send()"> send </button>
+  <button ng-click="listaddresses()"> listaddresses </button>
+  
+  
+  
+  <button ng-click="getasset()"> getasset </button>
+  
+  <button ng-click="createtodo()"> createtodo </button>
+  <button ng-click="gettodo()"> gettodo </button>
+  assetname<input ng-model="msg.name" />
+  
+  <div ng-repeat="player in players"        class="player">
+    <div><span ng-bind="player.name"></span></div>
+    <div> playing <span ng-bind="player.game"></span></div>
+	<div> age <span ng-bind="player.age"></span></div>
+  </div>
+
+  <div>
+    <form name="addForm"
+          ng-submit="addplayer()">
+      <input type="text"
+             placeholder="Name"
+             ng-model="newplayer.name"
+             required>
+			 <input type="text"
+             placeholder="Game"
+             ng-model="newplayer.game"
+             required>
+			 <input type="number"
+             placeholder="Age"
+             ng-model="newplayer.age"
+             required>
+      
+      <input type="submit"
+             value="Add"
+             ng-disabled="addForm.$invalid">
+    </form>
+	<button ng-click="getInfo()"> get multichain info</button> </br>
+	<button ng-click="createasset()"> createasset </button>
+	createdasset <div> {{createdasset}} </div> </br>
+	<button ng-click="createaddress()"> createaddress </button>
+	createdaddress <div> {{createdaddress}} </div> </br>
+  </div>
+
+<script
+  src="angular.min.js">
+</script>
+<script
+  src="socket.io-client/dist/socket.io.js">
+</script>
+
+<script>
+
+  angular.module('sportsApp', [])
+    .controller('MainCtrl', function($scope, $http) { 
+      
+      $scope.players = [];
+      $scope.newplayer = {};
+	  $scope.msg = {
+			name:'hello'
+		};
+	
+	   //var socket = io(); 
+
+	var socket = io('http://localhost:8080');
+	  
+	var todosocket = io('http://localhost:8080/blockchain');
+	//   var socket = io('http://localhost:8080', {path:'/test'});
+
+	
+	$scope.listaddresses = function ()
+	 {
+		var msg = {
+		name:"test1"
+		};
+		// alert('hi');
+		//var io1 = socket.connect();
+		todosocket.emit('getAllAddressesBC', msg);
+	 }
+	
+	
+	todosocket.on('allAddressesBC', function(msg) {
+		alert(angular.toJson(msg));
+		console.log("message", msg);
+		// this.chats.push(msg);
+    });
+	
+
+	$scope.createdaddress='';
+	$scope.createaddress = function ()
+	 {
+		var msg = {
+		name:"test1"
+		};
+		// alert('hi');
+		//var io1 = socket.connect();
+		todosocket.emit('getNewAddress', msg);
+	 }
+	
+	todosocket.on('gotNewAddress', function(msg) {
+		alert(angular.toJson(msg));
+		console.log("message", msg);
+		$scope.createdaddress = msg;
+		// this.chats.push(msg);
+    });
+	
+	
+	$scope.createtodo = function ()
+	 {
+		var msg = {
+		name:"test1"
+		};
+		// alert('hi');
+		//var io1 = socket.connect();
+		todosocket.emit('saveTodo', msg);
+	 }
+	
+	todosocket.on('allTodos', function(msg) {
+		alert(angular.toJson(msg));
+		console.log("message", msg);
+		// this.chats.push(msg);
+    });
+	
+	$scope.gettodo = function ()
+	{
+		var msg = {
+		name:"test1"
+		};
+		// alert('hi');
+		//var io1 = socket.connect();
+		todosocket.emit('getAllTodos', msg);
+	}
+	
+	
+	
+	
+	 
+	$scope.send = function ()
+	{
+		var msg = "test1";
+		// alert('hi');
+		// var io1 = socket.connect();
+		socket.emit('message', msg);
+	}
+	 	
+	$scope.createasset = function ()
+	{
+		// alert('hi');
+		// var io1 = socket.connect();
+		socket.emit('createasset', $scope.msg);
+	}
+	
+	socket.on('createdasset', function(msg) {
+		
+		alert(angular.toJson(msg));
+		
+		$scope.createdasset = msg;
+		
+		console.log("message", msg);
+		// this.chats.push(msg);
+    });
+	
+	 $scope.getasset = function ()
+	 {
+		var msg = "test1";
+		// alert('hi');
+		//var io1 = socket.connect();
+		socket.emit('getasset', msg);
+	 }
+	 
+	socket.on('gotasset', function(msg) {
+		alert(msg);
+		console.log("message", msg);
+		// this.chats.push(msg);
+    });
+	 
+	socket.on('message', function(msg) {
+		alert(msg);
+		console.log("message", msg);
+		// this.chats.push(msg);
+    });
+	
+    var fetchPlayers = function() {
+	  
+         return $http.get('/demo/getplayers').then(function(response) {
+          $scope.players = response.data;
+        }, function(errResponse) {
+          console.error('Error while fetching players');
+        });
+    };
+
+    //  fetchPlayers();
+
+    $scope.addplayer = function() {
+        $http.post('/demo/insertplayer', $scope.newplayer).then(function(response) {
+		
+			fetchPlayers();
+		
+		}, function(errResponse) {
+          console.error('Error while inserting player');
+        });
+      };
+	  
+	  $scope.getInfo = function() {
+        $http.post('/demo/getInfo', $scope.newplayer).then(function(response) {
+		
+			alert(angular.toJson(response.data));
+		
+		}, function(errResponse) {
+          console.error('Error while getting info');
+        });
+      };
+
+
+    });
+</script>
+</body>
+</html>
