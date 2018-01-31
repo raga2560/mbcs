@@ -5,10 +5,11 @@
     "assert": "^1.4.1",
     "bluebird": "^3.5.1",
     "body-parser": "~1.0.0",
+    "bson": "^1.0.4",
     "express": "~4.0.0",
     "express-session": "^1.15.6",
     "express-socket.io-session": "^1.3.2",
-    "mongodb": "~1.4.34",
+    "mongodb": "^3.0.1",
     "multichain-node": "^2.1.1-version1.0-beta1",
     "socket.io": "^1.7.3",
     "sockpress": "^1.3.0"

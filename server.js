@@ -83,15 +83,21 @@ io.on("connection", function(socket) {
 
 var BlockChain = require('./routes/BlockChain');
 
-
+/*
 
 MongoClient.connect('mongodb://localhost:27017/demoapp', function(err, db) {
     "use strict";
     if(err) throw err;
 
+*/
+
+MongoClient.connect('mongodb://localhost:27017', function (err, client) {
+  if (err) throw err;
+
+  var db = client.db('demoapp');
 	
-var todos = require('./routes/Blockchain.js')(io, db, multichain);
-var mydbs = require('./routes/Database.js')(io, db);
+var todos = require('./routes/BlockChain.js')(io, db, multichain);
+var mydbs = require('./routes/database.js')(io, db);
 
 	routes(app, db, multichain, io);
     // Application routes

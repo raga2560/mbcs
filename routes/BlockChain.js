@@ -348,6 +348,7 @@ function BlockChain(io, db, multichain) {
 			*/
 			
 			var data = data1.data;
+			var actiontype = data1.actiontype;
 	
 		    assets.sendAssetFrom(data.fromaddress, data.toaddress, data.asset, data.qty, function(err, tx) {
 		
@@ -362,13 +363,37 @@ function BlockChain(io, db, multichain) {
 				
 			
 		    }
-			
+		
+			var producer = '';
+			var aggregator = '';
+			var consumer = '';
+			var auctioner = '';
+			var returnaddress = '';
+			if(actiontype == 'producertoaggregator'){
+			producer = data.fromaddress;
+			aggregator = data.toaddress;
+			}else	
+			if(actiontype == 'aggregatortoauctioner'){
+			aggregator = data.fromaddress;
+			auctioner = data.toaddress;
+			}else	
+			if(actiontype == 'auctionertoconsumer'){
+			auctioner = data.fromaddress;
+			consumer = data.toaddress;
+			}else	
+			if(actiontype == 'returnfromauctioner'){
+			auctioner = data.fromaddress;
+			returnaddress = data.toaddress;
+			}	
 			var msg = {
 				tx: tx,
-				producer: '',
-				consumer: '',
-				aggregator: '',
-				auctioner: '',
+				producer: producer,
+				consumer: consumer,
+				aggregator: aggregator,
+				returnaddress: returnaddress,
+				auctioner: auctioner,
+				details: data.details,
+				asset: data.asset,
 	
 				addresses: [data.fromaddress, data.toaddress],
 				fromaddress:data.fromaddress,
