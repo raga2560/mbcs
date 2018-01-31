@@ -16,9 +16,23 @@ function BlockChain(io, db, multichain) {
  
     blockchain.on('connection', function(socket) {
  
-        socket.on('getAllAssetsDB', function() {
+        socket.on('getAllAssetsDB', function(indata) {
+	    var itemtosearch = '';
+            var query ={};
+            if(indata.query.type == 'producerlistall')
+	    {
+		query = {
+			'producer': indata.useraddress
+		};
+            }else if (indata.query.type == 'aggregatorlistall' )
+	    {
+		query = {
+			'aggregator': indata.useraddress
+		};
+	
+	    }
 			
-            todosDB.getAllAssetsDB(function(err, data) {
+            todosDB.getAllAssetsDB(query, function(err, data) {
             if (err) {
 				var error ={
 					function:'getAllAssetsDB',

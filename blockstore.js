@@ -14,8 +14,8 @@ function blockstore(db) {
 	
 	
 	
-	this.getAllAssetsDB = function(callback) {
-        dbblockstore.find({},{'details':1}).toArray(callback);
+	this.getAllAssetsDB = function(query, callback) {
+        dbblockstore.find(query,{'details':1}).toArray(callback);
     },
     this.saveTransaction = function(todo, callback) {
         dbblockstore.insert(todo, callback);
