@@ -1,12 +1,11 @@
 var AssetsDAO = require('../assets').AssetsDAO;
 // https://stackoverflow.com/questions/37559610
-var consumersideconfig = require('./consumersideconfig.json');
+// var consumersideconfig = require('./consumersideconfig.json');
 
 var todosDBB = require('../blockstore').blockstore;
 
 
 function Application(io, db, multichain) {
-    
     
     var assets = new AssetsDAO(db, multichain);
 
@@ -507,5 +506,5 @@ function Application(io, db, multichain) {
 }
 
 
-module.exports = BlockChain;
+module.exports = Application;
 

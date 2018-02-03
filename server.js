@@ -53,6 +53,12 @@ io.on("connection", function(socket) {
  /*socket.on('message', function(msg){
     io.emit('message', msg+1);
   }); */
+
+/*
+   socket.on('message1', function(msg){
+    io.sockets.emit('message1', msg);
+       });
+*/
   
 });
 
@@ -82,6 +88,7 @@ io.on("connection", function(socket) {
 // https://stackoverflow.com/questions/35014487/how-do-you-pass-a-socket-object-to-a-route
 
 var BlockChain = require('./routes/BlockChain');
+var Application = require('./application/Application');
 
 /*
 
@@ -97,6 +104,7 @@ MongoClient.connect('mongodb://localhost:27017', function (err, client) {
   var db = client.db('demoapp');
 	
 var todos = require('./routes/BlockChain.js')(io, db, multichain);
+var application = require('./application/Application.js')(io, db, multichain);
 var mydbs = require('./routes/database.js')(io, db);
 
 	routes(app, db, multichain, io);
