@@ -1,27 +1,27 @@
 var AssetsDAO = require('../assets').AssetsDAO;
 // https://stackoverflow.com/questions/37559610
-var blockchainconfig = require('./blockchainconfig.json');
+var consumersideconfig = require('./consumersideconfig.json');
 
 var todosDBB = require('../blockstore').blockstore;
 
 
-function BlockChain(io, db, multichain) {
+function Application(io, db, multichain) {
     
     
     var assets = new AssetsDAO(db, multichain);
 
     
-    var blockchain = io.of('/blockchain');
+    var consumerside = io.of('/consumerside');
 	var todosDB = new todosDBB(db);
  
-    blockchain.on('connection', function(socket) {
+    consumerside.on('connection', function(socket) {
 /*
         socket.on('message1', function(msg){
-    io.of('/blockchain').emit('message1', msg);
+    io.of('/consumerside').emit('message1', msg);
        });
    */
  
-        socket.on('getAllAssetsDB', function(indata) {
+        socket.on('getconsumerAuctions', function(indata) {
 	    var itemtosearch = '';
             var query ={};
             if(indata.query.type == 'producerlistall')
@@ -44,10 +44,10 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-				io.of('/blockchain').emit('errorReport', error);
+				io.of('/consumerside').emit('errorReport', error);
 				//throw err; // You can emit the error to a socket 
 			}
-            io.of('/blockchain').emit('allAssetsDB', data);
+            io.of('/consumerside').emit('consumerAuctions', data);
           });
 		
         });
@@ -63,11 +63,11 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-			io.of('/blockchain').emit('errorReport', error);
+			io.of('/consumerside').emit('errorReport', error);
 				
 			
 		    }
-			io.of('/blockchain').emit('allAssetsBC', record);
+			io.of('/consumerside').emit('allAssetsBC', record);
 		
 		});
 		});
@@ -83,11 +83,11 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-			io.of('/blockchain').emit('errorReport', error);
+			io.of('/consumerside').emit('errorReport', error);
 				
 			
 		    }
-			io.of('/blockchain').emit('allAddressesBC', record);
+			io.of('/consumerside').emit('allAddressesBC', record);
 		
 		});
 		});
@@ -104,11 +104,11 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-			io.of('/blockchain').emit('errorReport', error);
+			io.of('/consumerside').emit('errorReport', error);
 				
 			
 		    }
-			io.of('/blockchain').emit('gotAddressBalancesBC', record);
+			io.of('/consumerside').emit('gotAddressBalancesBC', record);
 		
 		});
 		});
@@ -125,11 +125,11 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-			io.of('/blockchain').emit('errorReport', error);
+			io.of('/consumerside').emit('errorReport', error);
 				
 			
 		    }
-			io.of('/blockchain').emit('gotNewAddress', record);
+			io.of('/consumerside').emit('gotNewAddress', record);
 		
 		});
 		});
@@ -159,7 +159,7 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-			io.of('/blockchain').emit('errorReport', error);
+			io.of('/consumerside').emit('errorReport', error);
 				
 			
 		    }
@@ -176,10 +176,10 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-				io.of('/blockchain').emit('errorReport', error);
+				io.of('/consumerside').emit('errorReport', error);
 				//throw err; // You can emit the error to a socket 
 			}
-            io.of('/blockchain').emit('grantedPermission', msg);
+            io.of('/consumerside').emit('grantedPermission', msg);
           });
 		  
 			
@@ -212,7 +212,7 @@ function BlockChain(io, db, multichain) {
 					err: err
 				};
 			console.log(err);
-			io.of('/blockchain').emit('errorReport', error);
+			io.of('/consumerside').emit('errorReport', error);
 				
 			
 		    }
@@ -236,10 +236,10 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-				io.of('/blockchain').emit('errorReport', error);
+				io.of('/consumerside').emit('errorReport', error);
 				//throw err; // You can emit the error to a socket 
 			}
-            io.of('/blockchain').emit('issuedAsset', msg);
+            io.of('/consumerside').emit('issuedAsset', msg);
           });
 		  
 			
@@ -269,7 +269,7 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-			io.of('/blockchain').emit('errorReport', error);
+			io.of('/consumerside').emit('errorReport', error);
 				
 			
 		    }
@@ -285,10 +285,10 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-				io.of('/blockchain').emit('errorReport', error);
+				io.of('/consumerside').emit('errorReport', error);
 				//throw err; // You can emit the error to a socket 
 			}
-            io.of('/blockchain').emit('issuedMoreAssets', msg);
+            io.of('/consumerside').emit('issuedMoreAssets', msg);
           });
 		  
 			
@@ -320,7 +320,7 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-			io.of('/blockchain').emit('errorReport', error);
+			io.of('/consumerside').emit('errorReport', error);
 				
 			
 		    }
@@ -338,10 +338,10 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-				io.of('/blockchain').emit('errorReport', error);
+				io.of('/consumerside').emit('errorReport', error);
 				//throw err; // You can emit the error to a socket 
 			}
-            io.of('/blockchain').emit('issuedAssetFrom', msg);
+            io.of('/consumerside').emit('issuedAssetFrom', msg);
           });
 		  
 			
@@ -378,7 +378,7 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-			io.of('/blockchain').emit('errorReport', error);
+			io.of('/consumerside').emit('errorReport', error);
 				
 			
 		    }
@@ -426,10 +426,10 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-				io.of('/blockchain').emit('errorReport', error);
+				io.of('/consumerside').emit('errorReport', error);
 				//throw err; // You can emit the error to a socket 
 			}
-            io.of('/blockchain').emit('sentAssetFrom', msg);
+            io.of('/consumerside').emit('sentAssetFrom', msg);
           });
 		  
 			
@@ -463,7 +463,7 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-			io.of('/blockchain').emit('errorReport', error);
+			io.of('/consumerside').emit('errorReport', error);
 				
 			
 		    }
@@ -483,10 +483,10 @@ function BlockChain(io, db, multichain) {
 					file:'BlockChain.js',
 					err: err
 				};
-				io.of('/blockchain').emit('errorReport', error);
+				io.of('/consumerside').emit('errorReport', error);
 				//throw err; // You can emit the error to a socket 
 			}
-            io.of('/blockchain').emit('sentAssetFromWithMetadata', msg);
+            io.of('/consumerside').emit('sentAssetFromWithMetadata', msg);
           });
 		  
 			
@@ -503,7 +503,7 @@ function BlockChain(io, db, multichain) {
    
    });
  
- return blockchain;
+ return consumerside;
 }
 
 
