@@ -13,6 +13,26 @@ module.exports = function(io, db) {
 			console.log('getalltodo');
             dispatchAll(socket);
         });
+        socket.on('getAlllinks', function() {
+			console.log('getalltodo');
+        databaseDB.getAllTodos(function(err, data) {
+            if (err) throw err; // You can emit the error to a socket 
+
+	io.of('/database').emit('alllinks', data);
+              });
+        });
+        socket.on('issuelink', function(sentdata) {
+			console.log('issuelink');
+	var data = {
+	publickey: 'abcd',
+	redeemscript: 'aybcd',
+	linkaddress: 'ab8cd'
+	};
+            databaseDB.saveTodo(data, function(err, data) {
+                if (err) throw err; // You can emit the error to a socket	
+	io.of('/database').emit('issuedlink', data);
+            });
+        });
  
         socket.on('saveTodo', function(todo) {
             databaseDB.saveTodo(todo, function(err, data) {
