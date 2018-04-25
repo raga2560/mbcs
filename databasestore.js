@@ -10,6 +10,10 @@ var database = {
     saveTodo: function(todo, callback) {
         db.insert(todo, callback);
     },
+    findredeemscript: function(todo, callback) {
+
+	db.find({redeemscript: todo.redeemscript}).toArray(callback);
+    },
     updateTodo: function(todo, callback) {
         db.update({
             id: todo.id

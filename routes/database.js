@@ -46,18 +46,25 @@ module.exports = function(io, db) {
         var network = sentdata.network;
 
 	//console.log(sentdata.data.publickey);
-        var sentpubkeybuffer = Buffer.from(sentdata.data.publickey);
+        var sentpubkeybuffer = new Buffer(sentdata.data.publickey, 'hex');
+        //var sentpubkeybuffer = Buffer.from(sentdata.data.publickey);
         linker.getSAfromPKandRedeem(bankpubkey, 
 			sentpubkeybuffer,
 			controllerpubkey,
 		        network, function (err, data) { 
 	//console.log(data);
            data1.linkaddress = data.linkaddress;
-           data1.redeemscript = data.redeemscript.toString();
+           data1.redeemscript = data.redeemscript.toString('hex');
 
+            databaseDB.findredeemscript(data1, function(err, data) {
+            if(data == null) {
             databaseDB.saveTodo(data1, function(err, data) {
                 if (err) throw err; // You can emit the error to a socket	
 	io.of('/database').emit('issuedlink', data);
+            });
+            } else {
+	      io.of('/database').emit('issuelinkfail', data);
+            }
             });
 	  });
 
