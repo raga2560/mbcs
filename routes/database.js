@@ -55,6 +55,7 @@ module.exports = function(io, db) {
 	//console.log(data);
            data1.linkaddress = data.linkaddress;
            data1.redeemscript = data.redeemscript.toString('hex');
+           data1.bankpubkey = bankpubkey.toString('hex');
 
             databaseDB.findredeemscript(data1, function(err, data) {
             if(data == null) {
@@ -63,7 +64,10 @@ module.exports = function(io, db) {
 	io.of('/database').emit('issuedlink', data);
             });
             } else {
-	      io.of('/database').emit('issuelinkfail', data);
+	      var businesserror = {
+		reason: 'link already exists'
+		};
+	      io.of('/database').emit('issuedlink', null);
             }
             });
 	  });
