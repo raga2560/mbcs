@@ -1,6 +1,13 @@
 var linkerDB = require('../linker').linker;
-	
+bitcoin = require('bitcoinjs-lib');
 
+	
+ var bankwifs = [
+'cRgHDYqrtkroagSUnjwmXUXSno9LSiQtw1HrMossTYpdMEBfSzmK',
+'cRgnQe1TQmgmz1fzyffsuUEuzDYiuMuUdTvXKAwYVRM8qt441vY9'
+ ];
+
+var controllerwif = 'cRgnQe1TQngWfnsLm7poFfow18d58j3bAm57dzwWAUFvmX5KJ76M';
 
 var databaseDBB = require('../databasestore').DatabaseStore;
 module.exports = function(io, db) {
@@ -16,22 +23,119 @@ module.exports = function(io, db) {
             dispatchAll(socket);
         });
         socket.on('getAlllinks', function() {
-			console.log('getalltodo');
+	console.log('getAlllinks:');
+
         databaseDB.getAllTodos(function(err, data) {
             if (err) throw err; // You can emit the error to a socket 
 
+        console.log("alllinks, returning:" + JSON.stringify(data));
 	io.of('/database').emit('alllinks', data);
               });
         });
+
+        socket.on('clearrecords', function(sentdata) {
+
+	console.log('clearrecords:'+ JSON.stringify(sentdata));
+
+         if(sentdata.data.chosenbank == 'ICICI')
+         {
+	bankwif = bankwifs[1];
+	 }
+         else {
+	bankwif = bankwifs[0];
+	 }
+        var bankkeyPair = bitcoin.ECPair.fromWIF(
+     		bankwif,
+     		bitcoin.networks.testnet);
+
+	var bankpubkey = bankkeyPair.getPublicKeyBuffer();
+
+        var bankpubkeystr = bankpubkey.toString('hex');
+
+        databaseDB.clearRecords(bankpubkeystr, function(err, data) {
+            if (err) throw err; // You can emit the error to a socket 
+
+        console.log("banklinks, returning:" + JSON.stringify(data));
+	io.of('/database').emit('banklinks', data);
+              });
+        });
+
+        socket.on('deletelink', function(sentdata) {
+	console.log('deletelink:'+ JSON.stringify(sentdata));
+
+        databaseDB.deletelink(sentdata.data.linktoremove, function(err, data) {
+            if (err) throw err; // You can emit the error to a socket 
+
+        console.log("banklinks, returning:" + JSON.stringify(data));
+	io.of('/database').emit('banklinks', data);
+              });
+        });
+
+        socket.on('getBanklinks', function(sentdata) {
+
+	console.log('getBanklinks:'+ JSON.stringify(sentdata));
+
+        var bankwif;
+
+         if(sentdata.data.chosenbank == 'ICICI')
+         {
+	bankwif = bankwifs[1];
+	 }
+         else {
+	bankwif = bankwifs[0];
+	 }
+
+        var bankkeyPair = bitcoin.ECPair.fromWIF(
+     		bankwif,
+     		bitcoin.networks.testnet);
+
+	var bankpubkey = bankkeyPair.getPublicKeyBuffer();
+
+        var bankpubkeystr = bankpubkey.toString('hex');
+
+        databaseDB.getBanklinks(bankpubkeystr, function(err, data) {
+            if (err) throw err; // You can emit the error to a socket 
+
+        console.log("banklinks, returning:" + JSON.stringify(data));
+	io.of('/database').emit('banklinks', data);
+              });
+        });
+
+
+        socket.on('getUserlinks', function(sentdata) {
+
+	console.log('getUserlinks:'+ JSON.stringify(sentdata));
+
+
+        var userpubkeystr = sentdata.data.publickey;
+
+        databaseDB.getUserlinks(userpubkeystr, function(err, data) {
+            if (err) throw err; // You can emit the error to a socket 
+
+        console.log("userlinks, returning:" + JSON.stringify(data));
+	io.of('/database').emit('userlinks', data);
+              });
+        });
+
         socket.on('issuelink', function(sentdata) {
-			console.log('issuelink:'+ JSON.stringify(sentdata));
+
+	console.log('issuelink:'+ JSON.stringify(sentdata));
+
 	var data1 = {
 	publickey: sentdata.data.publickey,
 	redeemscript: '',
+	bank: sentdata.data.chosenbank,
 	linkaddress: ''
 	};
-        var bankwif = 'cRgnQe1TQngWfX53nSbjuiBzpY1kB5aDVZBFyegf5jAvQGZPojA1';
-        var controllerwif = 'cRgnQe1TQngWfX53nSbjTGp3BwvrzawVYLqyR6qAr3zU16T3b2FB';
+        var bankwif;
+         if(sentdata.data.chosenbank == 'ICICI')
+         {
+	bankwif = bankwifs[1];
+	 }
+         else {
+	bankwif = bankwifs[0];
+        }
+
         var bankkeyPair = bitcoin.ECPair.fromWIF(
      		bankwif,
      		bitcoin.networks.testnet);
@@ -43,7 +147,7 @@ module.exports = function(io, db) {
 	var bankpubkey = bankkeyPair.getPublicKeyBuffer();
 
 	var controllerpubkey = controllerkeyPair.getPublicKeyBuffer();
-        var network = sentdata.network;
+        var network = bitcoin.networks.testnet;
 
 	//console.log(sentdata.data.publickey);
         var sentpubkeybuffer = new Buffer(sentdata.data.publickey, 'hex');
@@ -57,17 +161,22 @@ module.exports = function(io, db) {
            data1.redeemscript = data.redeemscript.toString('hex');
            data1.bankpubkey = bankpubkey.toString('hex');
 
-            databaseDB.findredeemscript(data1, function(err, data) {
-            if(data == null) {
-            databaseDB.saveTodo(data1, function(err, data) {
+            databaseDB.findredeemscript(data1, function(err, reddata) {
+		console.log("findredeemdata:" + JSON.stringify(reddata));
+		console.log("datatoinsert:" + data1);
+            if(reddata == null || reddata.length == 0) {
+            databaseDB.saveTodo(data1, function(err, savdata) {
+		console.log("savdata:" + savdata);
                 if (err) throw err; // You can emit the error to a socket	
-	io.of('/database').emit('issuedlink', data);
+	    console.log("issuedlink, returning:" + JSON.stringify(savdata));
+	      io.of('/database').emit('issuedlink', savdata);
             });
             } else {
 	      var businesserror = {
 		reason: 'link already exists'
 		};
-	      io.of('/database').emit('issuedlink', null);
+	    console.log("issuedlink, returning:" + JSON.stringify(reddata));
+	      io.of('/database').emit('issuedlink', reddata);
             }
             });
 	  });

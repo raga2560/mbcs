@@ -12,16 +12,18 @@ function linker () {
 
 
  this.getSAfromPKandRedeem = function(Pk1, Pk2, Pk3, network, callback) {
-var sa1=sinkaddr.sinkaddresslib.getSAfromPK(Pk1,Pk2, Pk3, network);
+    var sa1=sinkaddr.sinkaddresslib.getSAfromPK(Pk1,Pk2, Pk3, network);
     var sa = sinkaddr.sinkaddresslib.getSAfromPK(Pk1, Pk2, Pk3, network);
     var rd = sinkaddr.sinkaddresslib.getRDScriptfromPK(Pk1, Pk2, Pk3, network);
+
+    console.log("linker:sinkaddress="+sa);
 
      var data =
 	{
 	linkaddress: sa,
 	redeemscript : rd
 	};
-	callback (null, data);
+     callback (null, data);
  }
 
 
